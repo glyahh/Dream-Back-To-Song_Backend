@@ -1,0 +1,44 @@
+spring:
+  application:
+    name: Dream-Back-To-Song_backend
+
+  datasource:
+    # 开发环境数据库配置（基于你提供的 jdbc 前缀）
+    # 建议先在 MySQL 中创建库：CREATE DATABASE dream_back_to_song CHARACTER SET utf8mb4;
+    url: ${DB_URL:jdbc:aws-wrapper:mysql://127.0.0.1:3306/dream_back_to_song?useSSL=false&serverTimezone=UTC&characterEncoding=utf-8}
+    username: ${DB_USERNAME:root}
+    password: ${DB_PASSWORD:root}
+    driver-class-name: com.mysql.cj.jdbc.Driver
+
+  jackson:
+    serialization:
+      WRITE_DATES_AS_TIMESTAMPS: false
+    time-zone: Asia/Shanghai
+
+  mvc:
+    pathmatch:
+      matching-strategy: ANT_PATH_MATCHER
+
+server:
+  port: ${SERVER_PORT:8080}
+  servlet:
+    context-path: /api
+
+mybatis:
+  mapper-locations: classpath*:mapper/**/*.xml
+  type-aliases-package: com.dbts.dreambacktosong_backend.domain.entity
+  configuration:
+    map-underscore-to-camel-case: true
+    cache-enabled: false
+
+jwt:
+  # 这里会从环境变量 JWT_SECRET 读取，未配置时使用默认值（仅开发用）
+  secret: ${JWT_SECRET:please_change_this_in_env_file}
+  # token 过期时间（秒），与前端接口文档中的 expiresIn 对应
+  expires-in: ${JWT_EXPIRES_IN:86400}
+
+logging:
+  level:
+    root: INFO
+    com.dbts.dreambacktosong_backend: DEBUG
+

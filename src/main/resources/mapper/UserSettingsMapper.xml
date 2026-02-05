@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.dbts.dreambacktosong_backend.mapper.UserSettingsMapper">
+
+    <!--
+      用户设置表映射
+      对应表：user_settings
+    -->
+    <resultMap id="UserSettingsResultMap" type="com.dbts.dreambacktosong_backend.domain.entity.UserSettings">
+        <id property="id" column="id"/>
+        <result property="userId" column="user_id"/>
+        <result property="notify" column="notify"/>
+        <result property="sound" column="sound"/>
+        <result property="dataSaver" column="data_saver"/>
+        <result property="createdAt" column="created_at"/>
+        <result property="updatedAt" column="updated_at"/>
+    </resultMap>
+
+    <select id="findByUserId" resultMap="UserSettingsResultMap">
+        SELECT id, user_id, notify, sound, data_saver, created_at, updated_at
+        FROM user_settings
+        WHERE user_id = #{userId}
+    </select>
+
+    <insert id="insert" parameterType="com.dbts.dreambacktosong_backend.domain.entity.UserSettings" useGeneratedKeys="true"
+            keyProperty="id">
+        INSERT INTO user_settings (user_id, notify, sound, data_saver, created_at, updated_at)
+        VALUES (#{userId}, #{notify}, #{sound}, #{dataSaver}, NOW(), NOW())
+    </insert>
+
+    <update id="update" parameterType="com.dbts.dreambacktosong_backend.domain.entity.UserSettings">
+        UPDATE user_settings
+        SET
+            notify = #{notify},
+            sound = #{sound},
+            data_saver = #{dataSaver},
+            updated_at = NOW()
+        WHERE id = #{id}
+    </update>
+
+</mapper>

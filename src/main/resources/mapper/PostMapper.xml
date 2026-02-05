@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.dbts.dreambacktosong_backend.mapper.PostMapper">
+
+    <!-- 帖子表映射，对应表：posts -->
+    <resultMap id="PostResultMap" type="com.dbts.dreambacktosong_backend.domain.entity.Post">
+        <id property="id" column="id"/>
+        <result property="userId" column="user_id"/>
+        <result property="topic" column="topic"/>
+        <result property="content" column="content"/>
+        <result property="likesCount" column="likes_count"/>
+        <result property="createdAt" column="created_at"/>
+        <result property="updatedAt" column="updated_at"/>
+    </resultMap>
+
+    <insert id="insert" parameterType="com.dbts.dreambacktosong_backend.domain.entity.Post" useGeneratedKeys="true"
+            keyProperty="id">
+        INSERT INTO posts (user_id, topic, content, likes_count, created_at, updated_at)
+        VALUES (#{userId}, #{topic}, #{content}, 0, NOW(), NOW())
+    </insert>
+
+    <delete id="deleteByIdAndUserId">
+        DELETE FROM posts
+        WHERE id = #{id} AND user_id = #{userId}
+    </delete>
+
+    <select id="findById" resultMap="PostResultMap">
+        SELECT id, user_id, topic, content, likes_count, created_at, updated_at
+        FROM posts
+        WHERE id = #{id}
+    </select>
+
+    <!-- 热门动态：按点赞数 + 创建时间排序 -->
+    <select id="findHot" resultMap="PostResultMap">
+        SELECT id, user_id, topic, content, likes_count, created_at, updated_at
+        FROM posts
+        <where>
+            <if test="keyword != null and keyword != ''">
+                AND content LIKE CONCAT('%', #{keyword}, '%')
+            </if>
+        </where>
+        ORDER BY likes_count DESC, created_at DESC
+        LIMIT #{limit} OFFSET #{offset}
+    </select>
+
+    <!-- 关注动态：给定一组用户 ID -->
+    <select id="findByUserIds" resultMap="PostResultMap">
+        SELECT id, user_id, topic, content, likes_count, created_at, updated_at
+        FROM posts
+        <where>
+            user_id IN
+            <foreach collection="userIds" item="uid" open="(" separator="," close=")">
+                #{uid}
+            </foreach>
+        </where>
+        ORDER BY created_at DESC
+        LIMIT #{limit} OFFSET #{offset}
+    </select>
+
+    <select id="findByUserId" resultMap="PostResultMap">
+        SELECT id, user_id, topic, content, likes_count, created_at, updated_at
+        FROM posts
+        WHERE user_id = #{userId}
+        ORDER BY created_at DESC
+    </select>
+
+    <update id="updateLikesCount">
+        UPDATE posts
+        SET likes_count = likes_count + #{delta}
+        WHERE id = #{id}
+    </update>
+
+</mapper>

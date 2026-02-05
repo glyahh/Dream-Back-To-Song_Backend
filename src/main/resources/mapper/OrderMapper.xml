@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.dbts.dreambacktosong_backend.mapper.OrderMapper">
+
+    <!-- 订单主表映射，对应表：orders -->
+    <resultMap id="OrderResultMap" type="com.dbts.dreambacktosong_backend.domain.entity.Order">
+        <id property="id" column="id"/>
+        <result property="orderNo" column="order_no"/>
+        <result property="userId" column="user_id"/>
+        <result property="addressId" column="address_id"/>
+        <result property="totalAmount" column="total_amount"/>
+        <result property="status" column="status"/>
+        <result property="remark" column="remark"/>
+        <result property="payType" column="pay_type"/>
+        <result property="payAt" column="pay_at"/>
+        <result property="shipAt" column="ship_at"/>
+        <result property="confirmAt" column="confirm_at"/>
+        <result property="createdAt" column="created_at"/>
+        <result property="updatedAt" column="updated_at"/>
+    </resultMap>
+
+    <insert id="insert" parameterType="com.dbts.dreambacktosong_backend.domain.entity.Order" useGeneratedKeys="true"
+            keyProperty="id">
+        INSERT INTO orders (order_no, user_id, address_id, total_amount, status, remark, created_at, updated_at)
+        VALUES (#{orderNo}, #{userId}, #{addressId}, #{totalAmount}, #{status}, #{remark}, NOW(), NOW())
+    </insert>
+
+    <select id="findById" resultMap="OrderResultMap">
+        SELECT id, order_no, user_id, address_id, total_amount, status, remark,
+               pay_type, pay_at, ship_at, confirm_at, created_at, updated_at
+        FROM orders
+        WHERE id = #{id}
+    </select>
+
+    <select id="findByOrderNo" resultMap="OrderResultMap">
+        SELECT id, order_no, user_id, address_id, total_amount, status, remark,
+               pay_type, pay_at, ship_at, confirm_at, created_at, updated_at
+        FROM orders
+        WHERE order_no = #{orderNo}
+    </select>
+
+    <select id="findPageByStatus" resultMap="OrderResultMap">
+        SELECT id, order_no, user_id, address_id, total_amount, status, remark,
+               pay_type, pay_at, ship_at, confirm_at, created_at, updated_at
+        FROM orders
+        WHERE user_id = #{userId}
+        <if test="status != null and status != '' and status != 'all'">
+            AND status = #{status}
+        </if>
+        ORDER BY created_at DESC
+        LIMIT #{limit} OFFSET #{offset}
+    </select>
+
+    <select id="countByStatus" resultType="long">
+        SELECT COUNT(1)
+        FROM orders
+        WHERE user_id = #{userId}
+        <if test="status != null and status != '' and status != 'all'">
+            AND status = #{status}
+        </if>
+    </select>
+
+    <update id="updateStatus">
+        UPDATE orders
+        SET status = #{status}, updated_at = NOW()
+        WHERE id = #{id}
+    </update>
+
+    <update id="updatePayInfo">
+        UPDATE orders
+        SET pay_type = #{payType}, status = #{status}, pay_at = NOW(), updated_at = NOW()
+        WHERE id = #{id}
+    </update>
+
+</mapper>

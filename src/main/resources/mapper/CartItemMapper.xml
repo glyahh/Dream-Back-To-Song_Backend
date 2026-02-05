@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.dbts.dreambacktosong_backend.mapper.CartItemMapper">
+
+    <!-- 购物车明细表映射，对应表：cart_items -->
+    <resultMap id="CartItemResultMap" type="com.dbts.dreambacktosong_backend.domain.entity.CartItem">
+        <id property="id" column="id"/>
+        <result property="userId" column="user_id"/>
+        <result property="productId" column="product_id"/>
+        <result property="styleId" column="style_id"/>
+        <result property="qty" column="qty"/>
+        <result property="createdAt" column="created_at"/>
+        <result property="updatedAt" column="updated_at"/>
+    </resultMap>
+
+    <select id="findByUserId" resultMap="CartItemResultMap">
+        SELECT id, user_id, product_id, style_id, qty, created_at, updated_at
+        FROM cart_items
+        WHERE user_id = #{userId}
+    </select>
+
+    <select id="findByUserAndProduct" resultMap="CartItemResultMap">
+        SELECT id, user_id, product_id, style_id, qty, created_at, updated_at
+        FROM cart_items
+        WHERE user_id = #{userId}
+          AND product_id = #{productId}
+          AND (style_id = #{styleId} OR (style_id IS NULL AND #{styleId} IS NULL))
+    </select>
+
+    <insert id="insert" parameterType="com.dbts.dreambacktosong_backend.domain.entity.CartItem" useGeneratedKeys="true"
+            keyProperty="id">
+        INSERT INTO cart_items (user_id, product_id, style_id, qty, created_at, updated_at)
+        VALUES (#{userId}, #{productId}, #{styleId}, #{qty}, NOW(), NOW())
+    </insert>
+
+    <update id="updateQty">
+        UPDATE cart_items
+        SET qty = #{qty}, updated_at = NOW()
+        WHERE id = #{id}
+    </update>
+
+    <delete id="deleteById">
+        DELETE FROM cart_items
+        WHERE id = #{id}
+    </delete>
+
+    <delete id="deleteByUserAndProduct">
+        DELETE FROM cart_items
+        WHERE user_id = #{userId}
+          AND product_id = #{productId}
+          AND (style_id = #{styleId} OR (style_id IS NULL AND #{styleId} IS NULL))
+    </delete>
+
+</mapper>

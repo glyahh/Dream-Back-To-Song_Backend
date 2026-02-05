@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.dbts.dreambacktosong_backend.mapper.PrivateMessageMapper">
+
+    <!-- 私信表映射，对应表：private_messages -->
+    <resultMap id="PrivateMessageResultMap" type="com.dbts.dreambacktosong_backend.domain.entity.PrivateMessage">
+        <id property="id" column="id"/>
+        <result property="senderId" column="sender_id"/>
+        <result property="receiverId" column="receiver_id"/>
+        <result property="content" column="content"/>
+        <result property="isRead" column="is_read"/>
+        <result property="createdAt" column="created_at"/>
+    </resultMap>
+
+    <insert id="insert" parameterType="com.dbts.dreambacktosong_backend.domain.entity.PrivateMessage" useGeneratedKeys="true"
+            keyProperty="id">
+        INSERT INTO private_messages (sender_id, receiver_id, content, is_read, created_at)
+        VALUES (#{senderId}, #{receiverId}, #{content}, #{isRead}, NOW())
+    </insert>
+
+</mapper>

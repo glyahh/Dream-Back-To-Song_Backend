@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.dbts.dreambacktosong_backend.mapper.MessageMapper">
+
+    <!-- 消息通知表映射，对应表：messages -->
+    <resultMap id="MessageResultMap" type="com.dbts.dreambacktosong_backend.domain.entity.Message">
+        <id property="id" column="id"/>
+        <result property="userId" column="user_id"/>
+        <result property="category" column="category"/>
+        <result property="title" column="title"/>
+        <result property="preview" column="preview"/>
+        <result property="content" column="content"/>
+        <result property="isRead" column="is_read"/>
+        <result property="relatedId" column="related_id"/>
+        <result property="createdAt" column="created_at"/>
+    </resultMap>
+
+    <select id="findPage" resultMap="MessageResultMap">
+        SELECT id, user_id, category, title, preview, content, is_read, related_id, created_at
+        FROM messages
+        WHERE user_id = #{userId}
+        <if test="category != null and category != ''">
+            AND category = #{category}
+        </if>
+        ORDER BY created_at DESC
+        LIMIT #{limit} OFFSET #{offset}
+    </select>
+
+    <select id="count" resultType="long">
+        SELECT COUNT(1)
+        FROM messages
+        WHERE user_id = #{userId}
+        <if test="category != null and category != ''">
+            AND category = #{category}
+        </if>
+    </select>
+
+    <update id="markRead">
+        UPDATE messages
+        SET is_read = 1
+        WHERE id = #{id}
+          AND user_id = #{userId}
+    </update>
+
+    <select id="countUnreadByCategory" resultType="long">
+        SELECT COUNT(1)
+        FROM messages
+        WHERE user_id = #{userId}
+          AND is_read = 0
+        <if test="category != null and category != ''">
+            AND category = #{category}
+        </if>
+    </select>
+
+</mapper>

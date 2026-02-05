@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.dbts.dreambacktosong_backend.mapper.TopicMapper">
+
+    <!-- 话题表映射，对应表：topics -->
+    <resultMap id="TopicResultMap" type="com.dbts.dreambacktosong_backend.domain.entity.Topic">
+        <id property="id" column="id"/>
+        <result property="key" column="key"/>
+        <result property="title" column="title"/>
+        <result property="image" column="image"/>
+        <result property="link" column="link"/>
+        <result property="sortOrder" column="sort_order"/>
+    </resultMap>
+
+    <select id="findAll" resultMap="TopicResultMap">
+        SELECT id, `key`, title, image, link, sort_order
+        FROM topics
+        ORDER BY sort_order ASC, id DESC
+    </select>
+
+</mapper>

@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.dbts.dreambacktosong_backend.mapper.LogisticsMapper">
+
+    <!-- 物流信息表映射，对应表：logistics -->
+    <resultMap id="LogisticsResultMap" type="com.dbts.dreambacktosong_backend.domain.entity.Logistics">
+        <id property="id" column="id"/>
+        <result property="orderId" column="order_id"/>
+        <result property="company" column="company"/>
+        <result property="trackingNo" column="tracking_no"/>
+        <result property="traces" column="traces"/>
+        <result property="createdAt" column="created_at"/>
+        <result property="updatedAt" column="updated_at"/>
+    </resultMap>
+
+    <select id="findByOrderId" resultMap="LogisticsResultMap">
+        SELECT id, order_id, company, tracking_no, traces, created_at, updated_at
+        FROM logistics
+        WHERE order_id = #{orderId}
+    </select>
+
+    <insert id="insert" parameterType="com.dbts.dreambacktosong_backend.domain.entity.Logistics" useGeneratedKeys="true"
+            keyProperty="id">
+        INSERT INTO logistics (order_id, company, tracking_no, traces, created_at, updated_at)
+        VALUES (#{orderId}, #{company}, #{trackingNo}, #{traces}, NOW(), NOW())
+    </insert>
+
+    <update id="update" parameterType="com.dbts.dreambacktosong_backend.domain.entity.Logistics">
+        UPDATE logistics
+        SET company = #{company},
+            tracking_no = #{trackingNo},
+            traces = #{traces},
+            updated_at = NOW()
+        WHERE id = #{id}
+    </update>
+
+</mapper>

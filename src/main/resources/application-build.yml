@@ -1,0 +1,43 @@
+spring:
+  application:
+    name: Dream-Back-To-Song_backend
+
+  datasource:
+    # 生产/实际部署环境数据库配置
+    # 强烈建议在部署环境通过环境变量或容器配置覆盖下列默认值
+    url: ${DB_URL:jdbc:aws-wrapper:mysql://127.0.0.1:3306/dream_back_to_song?useSSL=false&serverTimezone=UTC&characterEncoding=utf-8}
+    username: ${DB_USERNAME:prod_user}
+    password: ${DB_PASSWORD:prod_password}
+    driver-class-name: com.mysql.cj.jdbc.Driver
+
+  jackson:
+    serialization:
+      WRITE_DATES_AS_TIMESTAMPS: false
+    time-zone: Asia/Shanghai
+
+  mvc:
+    pathmatch:
+      matching-strategy: ANT_PATH_MATCHER
+
+server:
+  port: ${SERVER_PORT:8080}
+  servlet:
+    context-path: /api
+
+mybatis:
+  mapper-locations: classpath*:mapper/**/*.xml
+  type-aliases-package: com.dbts.dreambacktosong_backend.domain.entity
+  configuration:
+    map-underscore-to-camel-case: true
+    cache-enabled: true
+
+jwt:
+  # 生产环境必须通过环境变量配置成足够复杂的随机字符串
+  secret: ${JWT_SECRET:please_override_in_production_env}
+  expires-in: ${JWT_EXPIRES_IN:86400}
+
+logging:
+  level:
+    root: INFO
+    com.dbts.dreambacktosong_backend: INFO
+

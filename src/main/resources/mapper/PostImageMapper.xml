@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.dbts.dreambacktosong_backend.mapper.PostImageMapper">
+
+    <!-- 帖子图片表映射，对应表：post_images -->
+    <resultMap id="PostImageResultMap" type="com.dbts.dreambacktosong_backend.domain.entity.PostImage">
+        <id property="id" column="id"/>
+        <result property="postId" column="post_id"/>
+        <result property="url" column="url"/>
+        <result property="sortOrder" column="sort_order"/>
+    </resultMap>
+
+    <select id="findByPostId" resultMap="PostImageResultMap">
+        SELECT id, post_id, url, sort_order
+        FROM post_images
+        WHERE post_id = #{postId}
+        ORDER BY sort_order ASC, id ASC
+    </select>
+
+</mapper>

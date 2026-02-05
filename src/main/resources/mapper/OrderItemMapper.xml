@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.dbts.dreambacktosong_backend.mapper.OrderItemMapper">
+
+    <!-- 订单明细表映射，对应表：order_items -->
+    <resultMap id="OrderItemResultMap" type="com.dbts.dreambacktosong_backend.domain.entity.OrderItem">
+        <id property="id" column="id"/>
+        <result property="orderId" column="order_id"/>
+        <result property="productId" column="product_id"/>
+        <result property="styleId" column="style_id"/>
+        <result property="productSnapshot" column="product_snapshot"/>
+        <result property="qty" column="qty"/>
+        <result property="price" column="price"/>
+        <result property="subtotal" column="subtotal"/>
+    </resultMap>
+
+    <insert id="insertBatch">
+        INSERT INTO order_items (order_id, product_id, style_id, product_snapshot, qty, price, subtotal)
+        VALUES
+        <foreach collection="items" item="item" separator=",">
+            (#{item.orderId}, #{item.productId}, #{item.styleId}, #{item.productSnapshot},
+             #{item.qty}, #{item.price}, #{item.subtotal})
+        </foreach>
+    </insert>
+
+    <select id="findByOrderId" resultMap="OrderItemResultMap">
+        SELECT id, order_id, product_id, style_id, product_snapshot, qty, price, subtotal
+        FROM order_items
+        WHERE order_id = #{orderId}
+    </select>
+
+</mapper>

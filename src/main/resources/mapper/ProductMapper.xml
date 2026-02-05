@@ -1,0 +1,116 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.dbts.dreambacktosong_backend.mapper.ProductMapper">
+
+    <!--
+      商品表映射
+      对应表：products
+    -->
+    <resultMap id="ProductResultMap" type="com.dbts.dreambacktosong_backend.domain.entity.Product">
+        <id property="id" column="id"/>
+        <result property="name" column="name"/>
+        <result property="subtitle" column="subtitle"/>
+        <result property="description" column="description"/>
+        <result property="mainImg" column="main_img"/>
+        <result property="price" column="price"/>
+        <result property="originPrice" column="origin_price"/>
+        <result property="tag" column="tag"/>
+        <result property="salesText" column="sales_text"/>
+        <result property="shopName" column="shop_name"/>
+        <result property="shippingFrom" column="shipping_from"/>
+        <result property="service" column="service"/>
+        <result property="type" column="type"/>
+        <result property="isFeatured" column="is_featured"/>
+        <result property="isCarousel" column="is_carousel"/>
+        <result property="sortOrder" column="sort_order"/>
+        <result property="createdAt" column="created_at"/>
+        <result property="updatedAt" column="updated_at"/>
+    </resultMap>
+
+    <!-- 商品分页查询 -->
+    <select id="findPage" resultMap="ProductResultMap">
+        SELECT
+            id, name, subtitle, description, main_img,
+            price, origin_price, tag, sales_text,
+            shop_name, shipping_from, service,
+            type, is_featured, is_carousel, sort_order,
+            created_at, updated_at
+        FROM products
+        <where>
+            <if test="type != null and type != ''">
+                AND type = #{type}
+            </if>
+            <if test="keyword != null and keyword != ''">
+                AND (name LIKE CONCAT('%', #{keyword}, '%')
+                  OR description LIKE CONCAT('%', #{keyword}, '%'))
+            </if>
+        </where>
+        ORDER BY sort_order ASC, id DESC
+        LIMIT #{limit} OFFSET #{offset}
+    </select>
+
+    <!-- 商品数量统计 -->
+    <select id="count" resultType="long">
+        SELECT COUNT(1)
+        FROM products
+        <where>
+            <if test="type != null and type != ''">
+                AND type = #{type}
+            </if>
+            <if test="keyword != null and keyword != ''">
+                AND (name LIKE CONCAT('%', #{keyword}, '%')
+                  OR description LIKE CONCAT('%', #{keyword}, '%'))
+            </if>
+        </where>
+    </select>
+
+    <!-- 根据 ID 查询商品 -->
+    <select id="findById" resultMap="ProductResultMap">
+        SELECT
+            id, name, subtitle, description, main_img,
+            price, origin_price, tag, sales_text,
+            shop_name, shipping_from, service,
+            type, is_featured, is_carousel, sort_order,
+            created_at, updated_at
+        FROM products
+        WHERE id = #{id}
+    </select>
+
+    <!-- 热门 / 轮播 商品列表 -->
+    <select id="findFeatured" resultMap="ProductResultMap">
+        SELECT
+            id, name, subtitle, description, main_img,
+            price, origin_price, tag, sales_text,
+            shop_name, shipping_from, service,
+            type, is_featured, is_carousel, sort_order,
+            created_at, updated_at
+        FROM products
+        <where>
+            <if test="type == 'hot'">
+                AND is_featured = 1
+            </if>
+            <if test="type == 'carousel'">
+                AND is_carousel = 1
+            </if>
+        </where>
+        ORDER BY sort_order ASC, id DESC
+    </select>
+
+    <!-- 根据一组 ID 查询商品 -->
+    <select id="findByIds" resultMap="ProductResultMap">
+        SELECT
+            id, name, subtitle, description, main_img,
+            price, origin_price, tag, sales_text,
+            shop_name, shipping_from, service,
+            type, is_featured, is_carousel, sort_order,
+            created_at, updated_at
+        FROM products
+        WHERE id IN
+        <foreach collection="ids" item="id" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </select>
+
+</mapper>

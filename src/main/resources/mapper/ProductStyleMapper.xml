@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.dbts.dreambacktosong_backend.mapper.ProductStyleMapper">
+
+    <!-- 商品款式表映射，对应表：product_styles -->
+    <resultMap id="ProductStyleResultMap" type="com.dbts.dreambacktosong_backend.domain.entity.ProductStyle">
+        <id property="id" column="id"/>
+        <result property="productId" column="product_id"/>
+        <result property="name" column="name"/>
+        <result property="thumb" column="thumb"/>
+        <result property="sortOrder" column="sort_order"/>
+    </resultMap>
+
+    <select id="findByProductId" resultMap="ProductStyleResultMap">
+        SELECT id, product_id, name, thumb, sort_order
+        FROM product_styles
+        WHERE product_id = #{productId}
+        ORDER BY sort_order ASC, id ASC
+    </select>
+
+</mapper>
